@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitTrack Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#111827);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    padding:20px;
+}
+/* MAIN CONTAINER */
+.container{
+    width:100%;
+    max-width:1200px;
+}
+/* LOGIN PAGE */
+.login-page{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.login-card{
+    width:100%;
+    max-width:420px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:40px;
+    border-radius:30px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.4);
+    animation:fadeIn 0.8s ease;
+}
+.logo{
+    font-size:42px;
+    text-align:center;
+    margin-bottom:10px;
+}
+.login-title{
+    text-align:center;
+    font-size:34px;
+    margin-bottom:10px;
+    background:linear-gradient(to right,#38bdf8,#818cf8);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    -webkit-text-fill-color:transparent;
+}
+.login-subtitle{
+    text-align:center;
+    color:#cbd5e1;
+    margin-bottom:30px;
+}
+.input-group{
+    margin-bottom:20px;
+}
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    color:#e2e8f0;
+}
+.input-group input{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    outline:none;
+    background:rgba(255,255,255,0.1);
+    color:white;
+    font-size:15px;
+}
+.input-group input::placeholder{
+    color:#cbd5e1;
+}
+.btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:linear-gradient(135deg,#38bdf8,#6366f1);
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(99,102,241,0.4);
+}
+.message{
+    margin-top:15px;
+    text-align:center;
+    color:#fca5a5;
+}
+/* DASHBOARD */
+.dashboard-page{
+    display:none;
+}
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+.welcome{
+    font-size:28px;
+    font-weight:600;
+}
+.logout-btn{
+    padding:12px 20px;
+    border:none;
+    border-radius:12px;
+    background:#ef4444;
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+}
+.layout{
+    display:grid;
+    grid-template-columns:350px 1fr;
+    gap:25px;
+}
+.card{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.1);
+    backdrop-filter:blur(15px);
+    border-radius:25px;
+    padding:25px;
+}
+.left-panel h2{
+    margin-bottom:20px;
+    font-size:28px;
+}
+select{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    outline:none;
+    background:rgba(255,255,255,0.1);
+    color:white;
+    font-size:15px;
+}
+option{
+    background:#111827;
+}
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+}
+.stat-box{
+    background:rgba(255,255,255,0.06);
+    border-radius:20px;
+    padding:20px;
+    text-align:center;
+    transition:0.3s;
+}
+.stat-box:hover{
+    transform:translateY(-5px);
+}
+.stat-box h2{
+    margin-top:10px;
+    font-size:34px;
+    color:#38bdf8;
+}
+.progress-section{
+    margin-top:25px;
+}
+.progress-title{
+    margin-bottom:15px;
+    font-size:22px;
+}
+.progress-bar{
+    width:100%;
+    height:20px;
+    background:rgba(255,255,255,0.1);
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:15px;
+}
+.progress{
+    height:100%;
+    width:0%;
+    background:linear-gradient(to right,#22d3ee,#6366f1);
+    border-radius:20px;
+    transition:1s;
+}
+.activity-list{
+    margin-top:25px;
+    max-height:250px;
+    overflow-y:auto;
+}
+.activity-item{
+    background:rgba(255,255,255,0.08);
+    padding:15px;
+    border-radius:16px;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+}
+canvas{
+    margin-top:25px;
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:10px;
+}
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+@media(max-width:900px){
+
+    .layout{
+        grid-template-columns:1fr;
+    }
+
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <!-- LOGIN PAGE -->
+    <div class="login-page" id="loginPage">
+        <div class="login-card">
+            <div class="logo">🏋️</div>
+            <h1 class="login-title">FitTrack Pro</h1>
+            <p class="login-subtitle">
+                Login to continue your fitness journey
+            </p>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <button class="btn" onclick="login()">
+                Login
+            </button>
+            <p class="message" id="loginMessage"></p>
+        </div>
+    </div>
+    <!-- DASHBOARD PAGE -->
+    <div class="dashboard-page" id="dashboardPage">
+        <div class="topbar">
+            <h2 class="welcome">
+                Welcome, <span id="userDisplay"></span> 👋
+            </h2>
+            <button class="logout-btn" onclick="logout()">
+                Logout
+            </button>
+        </div>
+        <div class="layout">
+            <!-- LEFT PANEL -->
+            <div class="card left-panel">
+                <h2>Add Activity</h2>
+                <div class="input-group">
+                    <label>Exercise Type</label>
+                    <select id="exerciseType">
+                        <option>Running</option>
+                        <option>Walking</option>
+                        <option>Gym Workout</option>
+                        <option>Yoga</option>
+                        <option>Cycling</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Workout Time (minutes)</label>
+                    <input type="number" id="workoutTime" placeholder="Enter minutes">
+                </div>
+                <div class="input-group">
+                    <label>Calories Burned</label>
+                    <input type="number" id="calories" placeholder="Enter calories">
+                </div>
+                <div class="input-group">
+                    <label>Steps Walked</label>
+                    <input type="number" id="steps" placeholder="Enter steps">
+                </div>
+                <button class="btn" onclick="addActivity()">
+                    Add Activity
+                </button>
+            </div>
+            <!-- RIGHT PANEL -->
+            <div class="card">
+                <div class="dashboard">
+                    <div class="stat-box">
+                        🔥
+                        <h2 id="totalCalories">0</h2>
+                        <p>Calories Burned</p>
+                    </div>
+                    <div class="stat-box">
+                        👟
+                        <h2 id="totalSteps">0</h2>
+                        <p>Total Steps</p>
+                    </div>
+                    <div class="stat-box">
+                        ⏱️
+                        <h2 id="totalMinutes">0</h2>
+                        <p>Workout Minutes</p>
+                    </div>
+                </div>
+                <div class="progress-section">
+                    <h3 class="progress-title">
+                        Daily Goal Progress
+                    </h3>
+                    <p>Calories Goal</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="calorieProgress"></div>
+                    </div>
+                    <p>Steps Goal</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="stepsProgress"></div>
+                    </div>
+                </div>
+                <canvas id="fitnessChart" height="120"></canvas>
+                <div class="activity-list" id="activityList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+/* LOGIN SYSTEM */
+function login(){
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    if(username === "" || password === ""){
+        document.getElementById("loginMessage").innerText =
+        "Please fill all fields";
+        return;
+    }
+    localStorage.setItem("loggedInUser", username);
+    showDashboard();
+}
+function logout(){
+    localStorage.removeItem("loggedInUser");
+    document.getElementById("dashboardPage").style.display = "none";
+    document.getElementById("loginPage").style.display = "flex";
+}
+function showDashboard(){
+    const user = localStorage.getItem("loggedInUser");
+    if(user){
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("dashboardPage").style.display = "block";
+        document.getElementById("userDisplay").innerText = user;
+    }
+}
+/* FITNESS TRACKER */
+let totalCalories = 0;
+let totalSteps = 0;
+let totalMinutes = 0;
+const ctx = document.getElementById('fitnessChart').getContext('2d');
+const chart = new Chart(ctx, {
+    type:'line',
+    data:{
+        labels:[],
+        datasets:[{
+            label:'Calories Burned',
+            data:[],
+            borderColor:'#38bdf8',
+            backgroundColor:'rgba(56,189,248,0.2)',
+            fill:true,
+            tension:0.4
+        }]
+    },
+    options:{
+        plugins:{
+            legend:{
+                labels:{
+                    color:'white'
+                }
+            }
+        },
+        scales:{
+            x:{
+                ticks:{
+                    color:'white'
+                }
+            },
+            y:{
+                ticks:{
+                    color:'white'
+                }
+            }
+        }
+    }
+
+});
+function addActivity(){
+    const type =
+    document.getElementById("exerciseType").value;
+    const minutes =
+    parseInt(document.getElementById("workoutTime").value) || 0;
+    const calories =
+    parseInt(document.getElementById("calories").value) || 0;
+    const steps =
+    parseInt(document.getElementById("steps").value) || 0;
+    totalCalories += calories;
+    totalSteps += steps;
+    totalMinutes += minutes;
+    document.getElementById("totalCalories").innerText =
+    totalCalories;
+    document.getElementById("totalSteps").innerText =
+    totalSteps;
+    document.getElementById("totalMinutes").innerText =
+    totalMinutes;
+    const caloriePercent =
+    Math.min((totalCalories / 2000) * 100,100);
+    const stepsPercent =
+    Math.min((totalSteps / 10000) * 100,100);
+    document.getElementById("calorieProgress").style.width =
+    caloriePercent + "%";
+    document.getElementById("stepsProgress").style.width =
+    stepsPercent + "%";
+    const item = document.createElement("div");
+    item.classList.add("activity-item");
+    item.innerHTML = `
+        <div>
+            <h4>${type}</h4>
+            <p>${minutes} mins • ${steps} steps</p>
+        </div>
+        <strong>${calories} cal</strong>
+    `;
+    document.getElementById("activityList").prepend(item);
+    chart.data.labels.push(type);
+    chart.data.datasets[0].data.push(calories);
+    chart.update();
+}
+/* AUTO LOGIN */
+showDashboard();
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+  onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyBkihq6Bp4JgVIV98EcFnhwfQZmTmUyM1I",
+  authDomain: "fitness-tracker-26.firebaseapp.com",
+  projectId: "fitness-tracker-26",
+  storageBucket: "fitness-tracker-26.firebasestorage.app",
+  messagingSenderId: "768791132181",
+  appId: "1:768791132181:web:9c5f1c6753d80766df761c",
+  measurementId: "G-2VH5R2JVPZ"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+</script>
+</body>
+</html>
